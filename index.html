@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>宝马220i二手车估价报告</title>
+<style>
+  :root {
+    --primary: #1a6fc4;
+    --primary-light: #e8f2fc;
+    --accent: #e8a838;
+    --accent-light: #fff8eb;
+    --success: #2eaa6f;
+    --success-light: #e6f7ef;
+    --danger: #e05555;
+    --danger-light: #fdeaea;
+    --text: #1d2939;
+    --text-secondary: #667085;
+    --border: #e4e7ec;
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+
+  /* Hero Section */
+  .hero {
+    background: linear-gradient(135deg, #1a6fc4 0%, #0d4f8f 100%);
+    color: white;
+    padding: 48px 20px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    color: white;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    backdrop-filter: blur(4px);
+  }
+  .hero h1 {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 6px;
+  }
+  .hero-sub {
+    font-size: 13px;
+    opacity: 0.8;
+  }
+
+  /* Price Highlight */
+  .price-card {
+    margin: -24px 16px 20px;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    padding: 24px 20px;
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+  .price-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  .price-value {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--danger);
+    line-height: 1.2;
+  }
+  .price-value span {
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .price-note {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+  }
+
+  /* Content */
+  .content {
+    padding: 0 16px;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 20px;
+  }
+  .section-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+    padding-left: 12px;
+    border-left: 3px solid var(--primary);
+  }
+
+  /* Card */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px;
+    margin-bottom: 14px;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card-title .icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  /* Info Grid */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .info-item {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .info-item.full {
+    grid-column: 1 / -1;
+  }
+  .info-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+  }
+  .info-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* Channel Price Bars */
+  .channel-item {
+    margin-bottom: 14px;
+  }
+  .channel-item:last-child {
+    margin-bottom: 0;
+  }
+  .channel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .channel-name {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .channel-price {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .channel-bar-bg {
+    height: 8px;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .channel-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease;
+  }
+  .channel-desc {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+
+  /* Comparable Table */
+  .comp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .comp-table th {
+    background: var(--bg);
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .comp-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .comp-table tr:last-child td {
+    border-bottom: none;
+  }
+  .comp-table .price-cell {
+    font-weight: 700;
+    color: var(--danger);
+    white-space: nowrap;
+  }
+
+  /* Retention Rate */
+  .retention-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 120px;
+    padding: 0 4px;
+    margin-top: 12px;
+  }
+  .retention-bar-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+  }
+  .retention-bar-val {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 4px;
+  }
+  .retention-bar {
+    width: 100%;
+    max-width: 36px;
+    border-radius: 4px 4px 0 0;
+    background: linear-gradient(180deg, var(--primary) 0%, #3a8ee6 100%);
+    transition: height 1s ease;
+  }
+  .retention-bar.highlight {
+    background: linear-gradient(180deg, var(--accent) 0%, #f0b955 100%);
+  }
+  .retention-bar-label {
+    font-size: 10px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    text-align: center;
+  }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    margin: 2px 4px 2px 0;
+    font-weight: 500;
+  }
+  .tag-green { background: var(--success-light); color: var(--success); }
+  .tag-red { background: var(--danger-light); color: var(--danger); }
+
+  /* Factor List */
+  .factor-list {
+    list-style: none;
+  }
+  .factor-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    line-height: 1.6;
+    display: flex;
+    gap: 8px;
+  }
+  .factor-list li:last-child {
+    border-bottom: none;
+  }
+  .factor-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    margin-top: 2px;
+  }
+  .factor-icon.up { background: var(--success-light); color: var(--success); }
+  .factor-icon.down { background: var(--danger-light); color: var(--danger); }
+
+  /* Tip Box */
+  .tip-box {
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+  .tip-box-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #b07c1e;
+    margin-bottom: 6px;
+  }
+  .tip-box p {
+    font-size: 13px;
+    color: #7a5a14;
+    line-height: 1.7;
+  }
+
+  /* Accordion */
+  .accordion {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .accordion-item {
+    border-bottom: 1px solid var(--border);
+  }
+  .accordion-item:last-child {
+    border-bottom: none;
+  }
+  .accordion-header {
+    padding: 14px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .accordion-header:active {
+    background: var(--bg);
+  }
+  .accordion-arrow {
+    transition: transform 0.3s;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .accordion-item.open .accordion-arrow {
+    transform: rotate(180deg);
+  }
+  .accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+    background: var(--card);
+  }
+  .accordion-body-inner {
+    padding: 0 16px 16px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
+  /* Source List */
+  .source-list {
+    list-style: none;
+    font-size: 12px;
+  }
+  .source-list li {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+  .source-list li:last-child {
+    border-bottom: none;
+  }
+  .source-list a {
+    color: var(--primary);
+    text-decoration: none;
+    word-break: break-all;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 24px 16px 40px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  /* Scroll animation */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-badge">📋 二手车估价调研</div>
+  <h1>宝马2系旅行车 220i<br>豪华设计套装（顶配）</h1>
+  <div class="hero-sub">2026年3月4日 · Manus AI 调研出品</div>
+</div>
+
+<!-- Price Card -->
+<div class="price-card fade-in">
+  <div class="price-label">综合建议售价区间</div>
+  <div class="price-value"><span>¥</span>5.0 - 6.0<span>万</span></div>
+  <div class="price-note">基于瓜子二手车、汽车之家、天天拍车等多平台数据综合分析</div>
+</div>
+
+<div class="content">
+
+  <!-- 车辆信息 -->
+  <div class="section fade-in">
+    <div class="section-title">车辆信息</div>
+    <div class="card">
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">车型</div>
+          <div class="info-value">220i 豪华设计套装</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">新车指导价</div>
+          <div class="info-value">32.98万</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">上牌日期</div>
+          <div class="info-value">2017年7月</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">车龄</div>
+          <div class="info-value">约8年8个月</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">表显里程</div>
+          <div class="info-value">8.6万公里</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">发动机</div>
+          <div class="info-value">2.0T 192马力</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">车身颜色</div>
+          <div class="info-value">白色</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">所在地</div>
+          <div class="info-value">上海</div>
+        </div>
+        <div class="info-item full">
+          <div class="info-label">车况</div>
+          <div class="info-value">良好 · 无事故 · 无大修</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="background: var(--primary-light); border: 1px solid #c5ddf5;">
+      <div style="font-size: 13px; color: #1a5a9e; line-height: 1.7;">
+        <strong>💡 关于新车实际成交价：</strong>该车型2017年新车终端优惠约4.72万元，实际裸车成交价约28.26万元，落地价约30.8万元。
+      </div>
+    </div>
+  </div>
+
+  <!-- 各渠道价格 -->
+  <div class="section fade-in">
+    <div class="section-title">各渠道预估价格</div>
+    <div class="card">
+      <div class="channel-item">
+        <div class="channel-header">
+          <span class="channel-name">🏪 卖给车商 / 4S店置换</span>
+          <span class="channel-price">4.0 - 5.0万</span>
+        </div>
+        <div class="channel-bar-bg">
+          <div class="channel-bar" style="width: 55%; background: linear-gradient(90deg, #e05555, #f08a8a);"></div>
+        </div>
+        <div class="channel-desc">批发价，最快捷但价格最低</div>
+      </div>
+      <div class="channel-item">
+        <div class="channel-header">
+          <span class="channel-name">🔨 拍卖平台（天天拍车等）</span>
+          <span class="channel-price">4.5 - 5.5万</span>
+        </div>
+        <div class="channel-bar-bg">
+          <div class="channel-bar" style="width: 65%; background: linear-gradient(90deg, #e8a838, #f5cc6a);"></div>
+        </div>
+        <div class="channel-desc">多家车商竞价，略高于单一车商报价</div>
+      </div>
+      <div class="channel-item">
+        <div class="channel-header">
+          <span class="channel-name">🤝 个人直接交易</span>
+          <span class="channel-price">5.0 - 6.0万</span>
+        </div>
+        <div class="channel-bar-bg">
+          <div class="channel-bar" style="width: 75%; background: linear-gradient(90deg, #1a6fc4, #5a9fd8);"></div>
+        </div>
+        <div class="channel-desc">熟人或本地交易，省去中间环节</div>
+      </div>
+      <div class="channel-item">
+        <div class="channel-header">
+          <span class="channel-name">📱 C2C平台（瓜子二手车）</span>
+          <span class="channel-price">5.5 - 6.5万</span>
+        </div>
+        <div class="channel-bar-bg">
+          <div class="channel-bar" style="width: 85%; background: linear-gradient(90deg, #2eaa6f, #5ec99a);"></div>
+        </div>
+        <div class="channel-desc">个人对个人零售价，需等待买家</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 市场对标 -->
+  <div class="section fade-in">
+    <div class="section-title">市场对标车源</div>
+    <div class="card">
+      <div class="card-title">
+        <span class="icon" style="background: var(--success-light); color: var(--success);">🚗</span>
+        瓜子二手车 · 220i 在售车源
+      </div>
+      <div style="overflow-x: auto; margin: 0 -4px;">
+        <table class="comp-table">
+          <thead>
+            <tr><th>车型</th><th>年份</th><th>里程</th><th>报价</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>220i 领先型</td>
+              <td>2017年</td>
+              <td>8.15万km</td>
+              <td class="price-cell">5.78万</td>
+            </tr>
+            <tr>
+              <td>220i 领先型</td>
+              <td>2016年</td>
+              <td>11.23万km</td>
+              <td class="price-cell">5.19万</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top: 12px; padding: 10px 12px; background: var(--bg); border-radius: 8px; font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+        第一辆车源与您的车上牌年份和里程几乎完全一致，是最佳对标。您的车为顶配豪华设计套装，配置更高，合理溢价约0.3-0.5万元。
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">
+        <span class="icon" style="background: var(--primary-light); color: var(--primary);">📊</span>
+        218i 参考均价（2017年上牌 · 上海）
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 8px 0;">
+        <div style="font-size: 28px; font-weight: 700; color: var(--primary);">4.84<span style="font-size: 14px; font-weight: 500;">万</span></div>
+        <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">
+          220i 相比 218i<br>溢价约 <strong style="color: var(--accent);">0.9万</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 保值率 -->
+  <div class="section fade-in">
+    <div class="section-title">保值率趋势</div>
+    <div class="card">
+      <div class="card-title">
+        <span class="icon" style="background: var(--primary-light); color: var(--primary);">📉</span>
+        汽车之家保值率数据
+      </div>
+      <div class="retention-chart">
+        <div class="retention-bar-wrap">
+          <div class="retention-bar-val">59.2%</div>
+          <div class="retention-bar" style="height: 80%;"></div>
+          <div class="retention-bar-label">1年</div>
+        </div>
+        <div class="retention-bar-wrap">
+          <div class="retention-bar-val">50.9%</div>
+          <div class="retention-bar" style="height: 68%;"></div>
+          <div class="retention-bar-label">2年</div>
+        </div>
+        <div class="retention-bar-wrap">
+          <div class="retention-bar-val">42.7%</div>
+          <div class="retention-bar" style="height: 57%;"></div>
+          <div class="retention-bar-label">3年</div>
+        </div>
+        <div class="retention-bar-wrap">
+          <div class="retention-bar-val">37.5%</div>
+          <div class="retention-bar" style="height: 50%;"></div>
+          <div class="retention-bar-label">4年</div>
+        </div>
+        <div class="retention-bar-wrap">
+          <div class="retention-bar-val">33.3%</div>
+          <div class="retention-bar" style="height: 44%;"></div>
+          <div class="retention-bar-label">5年</div>
+        </div>
+        <div class="retention-bar-wrap">
+          <div class="retention-bar-val">≈18%</div>
+          <div class="retention-bar highlight" style="height: 24%;"></div>
+          <div class="retention-bar-label">8-9年<br><span style="font-size:9px;color:var(--accent);">当前</span></div>
+        </div>
+      </div>
+      <div style="margin-top: 14px; font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+        上海地区5年保值率约45.7%。外推至8-9年车龄，保值率约17%-20%，对应理论估价约5.6-6.6万元。
+      </div>
+    </div>
+  </div>
+
+  <!-- 影响因素 -->
+  <div class="section fade-in">
+    <div class="section-title">价格影响因素</div>
+    <div class="card">
+      <div class="card-title" style="color: var(--success);">✅ 有利因素</div>
+      <ul class="factor-list">
+        <li>
+          <span class="factor-icon up">↑</span>
+          <span><strong>2.0T四缸发动机</strong>，比218i（1.5T三缸）更受欢迎，可靠性口碑好，溢价0.5-1.0万</span>
+        </li>
+        <li>
+          <span class="factor-icon up">↑</span>
+          <span><strong>顶配豪华设计套装</strong>，全景天窗、真皮座椅、HUD等配置加分，额外增值约0.3-0.5万</span>
+        </li>
+        <li>
+          <span class="factor-icon up">↑</span>
+          <span><strong>白色</strong>为最主流颜色，市场接受度高，不因颜色折价</span>
+        </li>
+        <li>
+          <span class="factor-icon up">↑</span>
+          <span><strong>8.6万公里</strong>对近9年车龄属正常偏低，车况良好无大修是重要加分项</span>
+        </li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color: var(--danger);">⚠️ 不利因素</div>
+      <ul class="factor-list">
+        <li>
+          <span class="factor-icon down">↓</span>
+          <span><strong>车型已停产</strong>（2019年），市场关注度下降，流通性较差</span>
+        </li>
+        <li>
+          <span class="factor-icon down">↓</span>
+          <span><strong>新能源车冲击</strong>，传统燃油车二手市场加速贬值</span>
+        </li>
+        <li>
+          <span class="factor-icon down">↓</span>
+          <span><strong>小众车型</strong>，国内保有量不大，二手市场需求有限</span>
+        </li>
+        <li>
+          <span class="factor-icon down">↓</span>
+          <span><strong>车龄近9年</strong>，进入快速贬值区间，维修保养成本预期较高</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 出售建议 -->
+  <div class="section fade-in">
+    <div class="section-title">出售建议</div>
+    <div class="tip-box">
+      <div class="tip-box-title">💰 渠道选择</div>
+      <p>建议优先尝试<strong>天天拍车</strong>等拍卖平台，让多家车商竞价。同时在<strong>瓜子二手车</strong>上以6.0-6.5万元挂牌试探市场。若一个月内无人问津，可下调至5.5-5.8万元。</p>
+    </div>
+    <div class="tip-box">
+      <div class="tip-box-title">🏷️ 定价策略</div>
+      <p>二手车市场上高配与低配价差远小于新车，不宜对顶配身份抱有过高期望。建议以220i领先型市场价为基准，适当上浮0.3-0.5万元。</p>
+    </div>
+    <div class="tip-box">
+      <div class="tip-box-title">⏰ 出售时机</div>
+      <p>燃油车二手价格整体呈下行趋势。如确定出售，建议<strong>尽早行动</strong>，每拖延半年可能再贬值0.3-0.5万元。</p>
+    </div>
+  </div>
+
+  <!-- 数据来源 -->
+  <div class="section fade-in">
+    <div class="section-title">数据来源</div>
+    <div class="accordion">
+      <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <span>查看全部参考来源（7个平台）</span>
+          <span class="accordion-arrow">▼</span>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-inner">
+            <ul class="source-list">
+              <li>[1] 汽车之家 - 220i豪华设计套装参数配置<br><a href="https://car.autohome.com.cn/config/spec/24338.html" target="_blank">car.autohome.com.cn</a></li>
+              <li>[2] 新浪汽车 - 2017年新车优惠行情<br><a href="http://auto.sina.cn/sales/2017-01-04/detail-ifxzczsu6741564.d.html" target="_blank">auto.sina.cn</a></li>
+              <li>[3] 瓜子二手车 - 上海宝马2系旅行车<br><a href="https://www.guazi.com/sh/bmw/bm2xlxc/" target="_blank">guazi.com</a></li>
+              <li>[4] 汽车之家/二手车之家 - 保值率与在售车源<br><a href="https://2sc.autohome.com.cn/441900/3941/" target="_blank">2sc.autohome.com.cn</a></li>
+              <li>[5] 汽车之家 - 220i领先型二手车报价<br><a href="https://m.autohome.com.cn/spec/25722/" target="_blank">m.autohome.com.cn</a></li>
+              <li>[6] 车主指南 - 保值率与估价模型<br><a href="https://www.icauto.com.cn/usedcar/s2530/" target="_blank">icauto.com.cn</a></li>
+              <li>[7] 天天拍车 - 成交记录<br><a href="https://m.ttpai.cn/quanguo/baoma-baoma2xilvxingche-a4" target="_blank">ttpai.cn</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Manus AI · 2026年3月4日调研<br>
+  数据仅供参考，实际成交价以市场为准
+</div>
+
+<script>
+  // Accordion toggle
+  function toggleAccordion(header) {
+    const item = header.parentElement;
+    const body = item.querySelector('.accordion-body');
+    const inner = body.querySelector('.accordion-body-inner');
+    
+    if (item.classList.contains('open')) {
+      body.style.maxHeight = '0';
+      item.classList.remove('open');
+    } else {
+      body.style.maxHeight = inner.scrollHeight + 'px';
+      item.classList.add('open');
+    }
+  }
+
+  // Scroll fade-in animation
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Trigger first visible elements
+  setTimeout(() => {
+    document.querySelector('.price-card').classList.add('visible');
+  }, 200);
+</script>
+
+</body>
+</html>
